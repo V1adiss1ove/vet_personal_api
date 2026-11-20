@@ -25,3 +25,16 @@ def decode_token(token: str) -> dict:
         return jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
     except InvalidTokenError:
         return None
+
+
+# ===== Hash and verify password =====
+def hash_password(password: str) -> bytes:
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode(), salt)
+
+
+def verify_password(password: str, hashed_password: bytes) -> bool:
+    return bcrypt.checkpw(
+        password=password.encode(),
+        hashed_password=hashed_password,
+    )
