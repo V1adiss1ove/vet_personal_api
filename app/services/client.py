@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.client import Client
-from app.schemas.client import ClientCreate, ClientRead, ClientUpdate
+from app.schemas.client import ClientCreate, ClientUpdate
 
 
 async def create_client(
