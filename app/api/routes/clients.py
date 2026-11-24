@@ -1,4 +1,6 @@
-from fastapi import APIRouter, status
+from typing import Annotated
+
+from fastapi import APIRouter, Query, status
 
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.client import ClientCreate, ClientRead, ClientUpdate
@@ -11,8 +13,8 @@ router = APIRouter(prefix="/clients", tags=["Clients"])
 async def list_clients(
     session: SessionDep,
     current_user: CurrentUser,
-    skip: int = 0,
-    limit: int = 20,
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(gt=0, le=100)] = 20,
 ):
     return await client_service.list_clients(
         session=session,
