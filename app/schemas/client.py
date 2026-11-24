@@ -20,7 +20,7 @@ class ClientRead(BaseModel):
 
 
 class ClientUpdate(BaseModel):
-    email: EmailStr | None
-    full_name: str
-    phone: str
-    address: str | None
+    email: EmailStr | None = Field(default=None, max_length=255)
+    full_name: str | None = Field(max_length=255)
+    phone: str | None = Field(max_length=30)
+    address: str | None = Field(default=None, max_length=500)
