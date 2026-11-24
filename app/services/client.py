@@ -32,7 +32,7 @@ async def read_client(
     session: AsyncSession,
     user_id: int,
     client_id: int,
-) -> ClientRead | None:
+) -> Client:
     result = await session.execute(
         select(Client).where(Client.id == client_id, Client.user_id == user_id)
     )
@@ -44,7 +44,7 @@ async def read_client(
             detail="Client not found",
         )
 
-    return
+    return client
 
 
 async def list_clients(
@@ -53,7 +53,7 @@ async def list_clients(
     user_id: int,
     skip: int = 0,
     limit: int = 20,
-) -> list[ClientRead]:
+) -> list[Client]:
     stmt = (
         select(Client)
         .where(Client.user_id == user_id)
