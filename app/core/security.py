@@ -9,7 +9,7 @@ from app.core.config import settings
 
 # ===== Encode/decode token =====
 def encode_token(subject: str | int) -> str:
-    expire = datetime.now(UTC) + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     payload = {
         "sub": str(subject),
