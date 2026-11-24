@@ -3,18 +3,9 @@ from sqlalchemy import select
 
 from app.api.deps import CurrentUser, SessionDep
 from app.models.user import User
-from app.schemas.user import UserCreate, UserRead
-from app.services.user import register_user
+from app.schemas.user import UserRead
 
 router = APIRouter(prefix="/users", tags=["Users"])
-
-
-@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-async def register(
-    session: SessionDep,
-    user_reg: UserCreate,
-):
-    return await register_user(session=session, user_reg=user_reg)
 
 
 @router.get("/me", response_model=UserRead)
