@@ -12,13 +12,7 @@ async def create_client(
     client_data: ClientCreate,
     user_id: int,
 ) -> Client:
-    client = Client(
-        email=client_data.email,
-        full_name=client_data.full_name,
-        phone=client_data.phone,
-        address=client_data.address,
-        user_id=user_id,
-    )
+    client = Client(**client_data.model_dump(), user_id=user_id)
 
     session.add(client)
     await session.commit()
@@ -33,15 +27,17 @@ async def read_client(
     user_id: int,
     client_id: int,
 ) -> Client:
-    result = await session.execute(
-        select(Client).where(Client.id == client_id, Client.user_id == user_id)
-    )
-    client = result.scalar_one_or_none()
+
+    client = await session.get(Client, client_id)
 
     if client is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Client not found",
+            status_code=status.HTTP_404_NOT_FOUND, detail="Client not found"
+        )
+
+    if client.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
 
     return client
