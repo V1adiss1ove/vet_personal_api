@@ -21,13 +21,12 @@ async def create_client(
     return client
 
 
-async def read_client(
+async def get_client_for_user(
     *,
     session: AsyncSession,
     user_id: int,
     client_id: int,
-) -> Client:
-
+):
     client = await session.get(Client, client_id)
 
     if client is None:
@@ -41,6 +40,20 @@ async def read_client(
         )
 
     return client
+
+
+async def read_client(
+    *,
+    session: AsyncSession,
+    user_id: int,
+    client_id: int,
+) -> Client:
+
+    return await get_client_for_user(
+        session=session,
+        user_id=user_id,
+        client_id=client_id,
+    )
 
 
 async def list_clients(
@@ -70,7 +83,7 @@ async def update_client(
     client_id: int,
     user_id: int,
 ) -> Client:
-    client = await read_client(
+    client = await get_client_for_user(
         session=session,
         user_id=user_id,
         client_id=client_id,
@@ -90,7 +103,11 @@ async def delete_client(
     client_id: int,
     user_id: int,
 ) -> None:
-    client = await read_client(session=session, user_id=user_id, client_id=client_id)
+    client = await get_client_for_user(
+        session=session,
+        user_id=user_id,
+        client_id=client_id,
+    )
 
     await session.delete(client)
     await session.commit()
