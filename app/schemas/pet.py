@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.models.pet import PetGender, SpeciesEnum
 
@@ -14,6 +14,13 @@ class PetCreate(BaseModel):
     birth_date: date | None = Field(default=None, examples=["2026-11-24"])
     weight: Decimal | None = Field(default=None, gt=0, max_digits=5, decimal_places=2)
     notes: str | None = Field(default=None, min_length=2, max_length=2000)
+
+    @field_validator("birth_date")
+    @classmethod
+    def check_date(cls, v: date):
+        if v > date.today():
+            raise ValueError("Некорретная дата")
+        return v
 
 
 class PetRead(BaseModel):
