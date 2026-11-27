@@ -111,8 +111,13 @@ async def update_pet(
         client_id=client_id,
         pet_id=pet_id,
     )
-
-    for field, value in pet_update.model_dump(exclude_unset=True).items():
+    data = pet_update.model_dump(exclude_unset=True)
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="At least one field must be provided",
+        )
+    for field, value in data.items():
         setattr(pet, field, value)
 
     await session.commit()
