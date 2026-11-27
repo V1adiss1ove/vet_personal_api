@@ -88,7 +88,13 @@ async def update_client(
         user_id=user_id,
         client_id=client_id,
     )
-    for field, value in client_update.model_dump(exclude_unset=True).items():
+    data = client_update.model_dump(exclude_unset=True)
+    if not data:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="At least one field must be provided",
+        )
+    for field, value in data.items():
         setattr(client, field, value)
 
     await session.commit()
