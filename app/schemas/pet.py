@@ -1,7 +1,13 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_validator,
+)
 
 from app.models.pet import PetGender, SpeciesEnum
 
@@ -17,9 +23,9 @@ class PetCreate(BaseModel):
 
     @field_validator("birth_date")
     @classmethod
-    def check_date(cls, v: date):
+    def check_date(cls, v: date) -> date:
         if v > date.today():
-            raise ValueError("Некорретная дата")
+            raise ValueError("Invalid data")
         return v
 
 
@@ -45,3 +51,12 @@ class PetUpdate(BaseModel):
     birth_date: date | None = None
     weight: Decimal | None = Field(default=None, gt=0, max_digits=5, decimal_places=2)
     notes: str | None = Field(default=None, min_length=2, max_length=2000)
+
+    @model_validator(mode="after")
+    def check_required_fields_for_pet(self):
+        required = {"name", "species", "gender"}
+        # model_fields_set - содержит явно переданные поля
+        for field in required & self.model_fields_set:  # пересечение множеств
+            if getattr(self, field) is None:
+                raise ValueError(f"Field '{field}' cannot be null")
+        return self
