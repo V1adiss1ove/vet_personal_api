@@ -27,16 +27,17 @@ async def get_client_for_user(
     user_id: int,
     client_id: int,
 ):
-    client = await session.get(Client, client_id)
+    result = await session.execute(
+        select(Client).where(
+            Client.id == client_id,
+            Client.user_id == user_id,
+        )
+    )
+    client = result.scalar_one_or_none()
 
     if client is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Client not found"
-        )
-
-    if client.user_id != user_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
         )
 
     return client
