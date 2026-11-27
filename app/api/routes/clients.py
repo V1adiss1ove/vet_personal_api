@@ -71,7 +71,7 @@ async def delete_client(
     client_id: int,
     current_user: CurrentUser,
 ):
-    return await client_service.delete_client(
+    await client_service.delete_client(
         session=session,
         client_id=client_id,
         user_id=current_user.id,
