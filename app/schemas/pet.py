@@ -9,12 +9,12 @@ from pydantic import (
     model_validator,
 )
 
-from app.models.pet import PetGender, SpeciesEnum
+from app.models.pet import PetGender, PetSpecies
 
 
 class PetCreate(BaseModel):
     name: str = Field(min_length=2, max_length=128)
-    species: SpeciesEnum
+    species: PetSpecies
     breed: str | None = Field(default=None, min_length=3, max_length=256)
     gender: PetGender
     birth_date: date | None = Field(default=None, examples=["2026-11-24"])
@@ -32,7 +32,7 @@ class PetCreate(BaseModel):
 class PetRead(BaseModel):
     id: int
     name: str
-    species: SpeciesEnum
+    species: PetSpecies
     breed: str | None
     gender: PetGender
     birth_date: date | None
@@ -46,7 +46,7 @@ class PetRead(BaseModel):
 
 class PetUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=128)
-    species: SpeciesEnum | None = None
+    species: PetSpecies | None = None
     breed: str | None = Field(default=None, min_length=3, max_length=256)
     gender: PetGender | None = None
     birth_date: date | None = None

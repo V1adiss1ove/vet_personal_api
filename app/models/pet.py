@@ -15,7 +15,7 @@ class PetGender(str, Enum):
     unknown = "unknown"
 
 
-class SpeciesEnum(str, Enum):
+class PetSpecies(str, Enum):
     cat = "cat"
     dog = "dog"
     rabbit = "rabbit"
@@ -26,8 +26,8 @@ class SpeciesEnum(str, Enum):
 
 class Pet(Base):
     name: Mapped[str] = mapped_column(String(128))
-    species: Mapped[SpeciesEnum] = mapped_column(
-        SQLEnum(SpeciesEnum, name="species_enum", native_enum=False)
+    species: Mapped[PetSpecies] = mapped_column(
+        SQLEnum(PetSpecies, name="pet_species", native_enum=False)
     )
     breed: Mapped[str | None] = mapped_column(String(256))
     gender: Mapped[PetGender] = mapped_column(
