@@ -39,18 +39,18 @@ async def get_pet_for_client(
     client = await get_client_for_user(
         session=session, user_id=user_id, client_id=client_id
     )
-    pet = await session.get(Pet, pet_id)
+    result = await session.execute(
+        select(Pet).where(
+            Pet.id == pet_id,
+            Pet.client_id == client.id,
+        )
+    )
+    pet = result.scalar_one_or_none()
 
     if pet is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Pet not found",
-        )
-
-    if client.id != pet.client_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions",
         )
 
     return pet
